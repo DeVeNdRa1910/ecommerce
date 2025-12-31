@@ -23,6 +23,17 @@ def get_product_by_name(
     order: str = Query(
         default="asc",
         description="Sort order when sort_by_price=true (asc, desc)"
+    ),
+    limit: int = Query(
+        default=10,
+        ge=1,
+        le=100,
+        description="Number of items"
+    ), 
+    offset: int = Query(
+        default=0,
+        ge=0, 
+        description="Pagination offset"  
     )
 ):
     products = get_all_products()
@@ -39,6 +50,8 @@ def get_product_by_name(
         reverse = order == "desc"
         products = sorted(products, key=lambda p: p.get("price", ""), reverse=reverse)
         
+    products = products[offset: limit]
+    
     return {
         "total": total,
         "products": products
