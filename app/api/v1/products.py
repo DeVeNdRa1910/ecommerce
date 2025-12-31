@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Path
 from service.products import get_all_products
 
 router = APIRouter()
@@ -57,3 +57,27 @@ def get_product_by_name(
         "products": products
     }
     
+@router.get("/{product_id}")
+def get_product_by_id(
+    product_id: str = Path(..., 
+        min_length=36, 
+        max_length=36,
+        description="UUID of the product", 
+        example="8885a4ea-ce3f-7dd7-bee0-t4ccc70fea6a"
+    ),
+):
+    products = get_all_products()
+    
+    # product = next((p for p in products if p["id"] == product_id), None)
+    
+    # for product in products:
+    #     if product["id"] == product_id:
+    #         return product
+    # raise HTTPException(status_code=404, detail="Product not found")
+    
+    product = [p for p in products if p["id"] == product_id][0]
+    
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    return product
