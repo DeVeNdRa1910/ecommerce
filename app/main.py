@@ -15,25 +15,32 @@ def get_product_by_name(
         min_length=1, 
         max_length=50, 
         description="Search product by name (case insensitive)"
+    ),
+    sort_by_price: bool = Query(
+        default=False,
+        description="Sort products by price",
+    ),
+    order: str = Query(
+        default="asc",
+        description="Sort order when sort_by_price=true (asc, desc)"
     )
 ):
     products = get_all_products()
-    filter_products = []
     
     if name:
         needle = name.strip().lower()
-        filter_products = [p for p in products if needle in p.get("name", "").lower()]
+        products = [p for p in products if needle in p.get("name", "").lower()]
         
-        if not filter_products:
+        if not products:
             raise HTTPException(status_code=404, detail=f"No product found matching name={name}")
-        total = len(filter_products)
+        total = len(products)
         
-    else:
-        filter_products = products
-        total = len(filter_products)
+    if sort_by_price:
+        reverse = order == "desc"
+        products = sorted(products, key=lambda p: p.get("price", ""), reverse=reverse)
         
     return {
         "total": total,
-        "products": filter_products
+        "products": products
     }
     
