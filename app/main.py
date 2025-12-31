@@ -50,7 +50,7 @@ def get_product_by_name(
         reverse = order == "desc"
         products = sorted(products, key=lambda p: p.get("price", ""), reverse=reverse)
         
-    products = products[offset: limit]
+    products = products[offset: offset+limit]
     
     return {
         "total": total,
