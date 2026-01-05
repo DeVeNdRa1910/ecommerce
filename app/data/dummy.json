@@ -13,25 +13,59 @@
         "is_active": true,
         "rating": 4.8,
         "tags": [
-        "charger",
-        "amoled",
-        "tablet"
+            "charger",
+            "amoled",
+            "tablet"
         ],
         "image_urls": [
-        "https://cdn.example.com/xiaomi/front.png",
-        "https://cdn.example.com/xiaomi/back.png"
+            "https://cdn.example.com/xiaomi/front.png",
+            "https://cdn.example.com/xiaomi/back.png"
         ],
         "dimensions_cm": {
-        "length": 27.4,
-        "width": 20.8,
-        "height": 1.9
+            "length": 27.4,
+            "width": 20.8,
+            "height": 1.9
         },
         "seller": {
-        "seller_id": "73cbdd06-5668-4e52-b172-e765f8468398",
-        "name": "Mi Store",
-        "email": "support@mistore.in",
-        "website": "https://www.mistore.in"
+            "seller_id": "73cbdd06-5668-4e52-b172-e765f8468398",
+            "name": "Mi Store",
+            "email": "support@mistore.in",
+            "website": "https://www.mistore.in"
         },
         "created_at": "2024-09-06T00:00:00Z"
+    },
+    {
+        "id": "b1ad2e70-2dca-4a91-a8af-0946233c5b8f",
+        "name": "string",
+        "sku": "734-hjd-378",
+        "description": "string",
+        "category": "string",
+        "brand": "string",
+        "price": 20000,
+        "currency": "INR",
+        "discount_percent": 12,
+        "stock": 50,
+        "is_active": true,
+        "rating": 4.5,
+        "tags": [
+            "string"
+        ],
+        "images": [
+            "https://example.com/"
+        ],
+        "dimensions_cm": {
+            "length": 1.0,
+            "width": 1.0,
+            "hieght": 1.0
+        },
+        "seller": {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "name": "string",
+            "website": "https://example.com/",
+            "email": "user@hpworld.in"
+        },
+        "created_at": "2026-01-05T16:49:38.136927+00:00",
+        "calculate_price_after_discount": 17600.0,
+        "calculate_volume": 1.0
     }
 ]

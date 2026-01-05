@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Path
-from service.products import get_all_products, add_product
+from service.products import get_all_products, add_product, remove_product
 from schemas import Product
-from uuid import uuid4
+from uuid import uuid4, UUID
 from datetime import datetime, timezone
 
 router = APIRouter()
@@ -88,7 +88,7 @@ def get_product_by_id(
 @router.post("/")
 def create_product(product: Product):
     # Now Product is the python dictionary object  and we are converting it to the json(java script object notation)
-    product_dict = product.model_jump(mode="json")
+    product_dict = product.model_dump(mode="json")
     product_dict["id"] = str(uuid4())
     # product_dict["created_at"] = datetime.utcnow().isoformat() + "Z" This is deprecated
     product_dict["created_at"] = datetime.now(timezone.utc).isoformat()
@@ -97,3 +97,13 @@ def create_product(product: Product):
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     return product_dict
+
+@router.delete("/{product_id}")
+def delete_product(product_id: UUID = Path(..., description="Product ID", example="550e8400-e29b-41d4-a716-446655440000")):
+    try:
+        res = remove_product(product_id)
+        return res
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
+    

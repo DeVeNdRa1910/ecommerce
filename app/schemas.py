@@ -14,6 +14,27 @@ from datetime import datetime
 # We have three type of validators in pydantic -> field-validator, model_validator and compute_field
 # XIAO-359GB-001 is the formate of the sku, to validate it we have validator's
 
+class Seller(BaseModel):
+    id: UUID
+    name: str = Field(..., min_length=4)
+    website: AnyUrl
+    email: EmailStr  # Here we want to validate the email field only for that we can use field validator
+    
+    
+    @field_validator("email", mode="after")
+    @classmethod
+    def validate_seller_email_domain(cls, value: EmailStr):
+        allwed_domain = ["mistore.in", "realmeofficial.in", "samsungindia.in", "lenovostore.in", "hpworld.in", "applestoreindia.in", "dellexclusive.in", "sonycenter.in", "oneplusstore.in", "asusexclusive.in", "gmail.com"]
+        domain = str(value).split("@")[-1].lower()
+        if domain not in allwed_domain:
+            raise ValueError(f"Seller email domain not allowed: {domain}") 
+        return value
+    
+class Dimension(BaseModel):
+    length: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
+    width: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
+    hieght: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
+
 class Product(BaseModel):
     id: UUID
     name: str = Field(..., min_length=4)
@@ -84,24 +105,3 @@ class Product(BaseModel):
     def calculate_volume(self) -> float:
         d = self.dimensions_cm
         return round(d.hieght * d.length * d.width, 2)
-    
-class Seller(BaseModel):
-    id: UUID
-    name: str = Field(..., min_length=4)
-    website: AnyUrl
-    email: EmailStr  # Here we want to validate the email field only for that we can use field validator
-    
-    
-    @field_validator("email", mode="after")
-    @classmethod
-    def validate_seller_email_domain(cls, value: EmailStr):
-        allwed_domain = ["mistore.in", "realmeofficial.in", "samsungindia.in", "lenovostore.in", "hpworld.in", "applestoreindia.in", "dellexclusive.in", "sonycenter.in", "oneplusstore.in", "asusexclusive.in", "gmail.com"]
-        domain = str(value).split("@")[-1].lower()
-        if domain not in allwed_domain:
-            raise ValueError(f"Seller email domain not allowed: {domain}") 
-        return value
-    
-class Dimension(BaseModel):
-    length: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
-    width: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
-    hieght: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
