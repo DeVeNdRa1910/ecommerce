@@ -1,4 +1,12 @@
-from pydantic import BaseModel, Field, AnyUrl, field_validator, model_validator, compute_field
+from pydantic import (
+    BaseModel, 
+    Field, 
+    AnyUrl, 
+    field_validator, 
+    model_validator, 
+    computed_field, 
+    EmailStr
+)
 from typing import Annotated, Literal, Optional, List
 from uuid import UUID
 from datetime import datetime
@@ -33,8 +41,8 @@ class Product(BaseModel):
         Optional[List[AnyUrl]],
         Field(min_length=1, description="Atleas 1 image url")
     ]
-    # dimension: str
-    # seller: str
+    dimensions_cm: Dimension
+    seller: Seller 
     created_at: datetime
     
     # In python input is taking in the string bydefault, if we want to perform any operation then we have to convert them, before converting mode will be "before" and after converting mode will be "after" 
@@ -66,7 +74,34 @@ class Product(BaseModel):
         return model
     
     # For final price we have to substract the discount from the price. For that kind of work we have compute_field
-    @compute_field
+    @computed_field
     @property
     def calculate_price_after_discount(self) -> float:
         return round(self.price * (1 - self.discount_percent / 100), 2)
+    
+    @computed_field
+    @property
+    def calculate_volume(self) -> float:
+        d = self.dimensions_cm
+        return round(d.hieght * d.length * d.width, 2)
+    
+class Seller(BaseModel):
+    id: UUID
+    name: str = Field(..., min_length=4)
+    website: AnyUrl
+    email: EmailStr  # Here we want to validate the email field only for that we can use field validator
+    
+    
+    @field_validator("email", mode="after")
+    @classmethod
+    def validate_seller_email_domain(cls, value: EmailStr):
+        allwed_domain = ["mistore.in", "realmeofficial.in", "samsungindia.in", "lenovostore.in", "hpworld.in", "applestoreindia.in", "dellexclusive.in", "sonycenter.in", "oneplusstore.in", "asusexclusive.in", "gmail.com"]
+        domain = str(value).split("@")[-1].lower()
+        if domain not in allwed_domain:
+            raise ValueError(f"Seller email domain not allowed: {domain}") 
+        return value
+    
+class Dimension(BaseModel):
+    length: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
+    width: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]
+    hieght: Annotated[float, Field(gt=0, strict=True, description="Length in cm")]

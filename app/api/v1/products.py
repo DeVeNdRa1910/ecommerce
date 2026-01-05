@@ -85,4 +85,5 @@ def get_product_by_id(
 
 @router.post("/")
 def create_product(product: Product):
-    return product
+    # Now Product is the python dictionary object and we are converting it to the json(java script object notation)
+    return product.model_dump(mode="json") 
