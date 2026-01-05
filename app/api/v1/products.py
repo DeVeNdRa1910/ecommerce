@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Path
 from service.products import get_all_products
+from schemas import Product
 
 router = APIRouter()
 
@@ -80,4 +81,8 @@ def get_product_by_id(
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
+    return product
+
+@router.post("/")
+def create_product(product: Product):
     return product
