@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Path
-from service.products import get_all_products, add_product, remove_product
-from schemas import Product
+from service.products import get_all_products, add_product, remove_product, change_product
+from schemas import Product, ProductUpdate
 from uuid import uuid4, UUID
 from datetime import datetime, timezone
 
@@ -106,4 +106,10 @@ def delete_product(product_id: UUID = Path(..., description="Product ID", exampl
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-    
+@router.put("/{product_id}")
+def update_product(product_id: UUID = Path(..., description = "Product UUID"), payload: ProductUpdate = None):
+    try:
+        res = change_product(product_id, payload.model_dump(mode="json", exclude_unset=True))
+        return res
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) 
