@@ -131,14 +131,6 @@ class DimensionUpdate(BaseModel):
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=4)
-    sku: Annotated[Optional[str], Field(
-        None,
-        min_length=6,
-        max_length=30,
-        title="SKU",
-        description="Stock Keeping Unit",
-        example=["734-hjd-378-3d", "asdasd-asd-sad"]
-    )] = None
     description: Optional[str] = None
     category: Optional[str] = None
     brand: Optional[str] = None
@@ -152,26 +144,7 @@ class ProductUpdate(BaseModel):
     images: Optional[List[AnyUrl]] = None
     dimensions_cm: Optional[DimensionUpdate] = None
     seller: Optional[SellerUpdate] = None
-    
-    # In python input is taking in the string bydefault, if we want to perform any operation then we have to convert them, before converting mode will be "before" and after converting mode will be "after" 
-    # Here we are converting(in suitable for perticular operation) the data with the help of pydantic
-    # filed_validator is working on single field only 
-    @field_validator("sku", mode="after")
-    @classmethod
-    def validate_sku_formate(cls, value: Optional[str]):
-        if value is None:
-            return value
-        
-        if "-" not in value:
-            raise ValueError("SKU must have '-' ")
-        
-        last_three_digit = value.split("-")[-1]
-        
-        if not (len(last_three_digit)==3 and last_three_digit.isdigit()):
-            raise ValueError("SKU must end with 3-digit sequance like -234 ")
-        
-        return value 
-    
+
     # model validator is working on the complete model
     @model_validator(mode="after")
     @classmethod
